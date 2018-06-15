@@ -15,7 +15,7 @@ class Entity
     "X"
   end
 
-  def collide_with(entity : Entity) # when the player runs into this entity
+  def collide_with(entity : Entity) # when the current entity runs into another entity
     game.message = "#{self.name} ran into a #{entity.name}!"
   end
 

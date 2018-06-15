@@ -7,7 +7,11 @@ class Player < Entity
   end
 
   def name
-    "You"
+    "you"
+  end
+
+  def collide_with(entity : Entity) # when the player runs into another entity
+    game.message = "You wonder why you keep walking into things..."
   end
 end
 
