@@ -1,5 +1,5 @@
 require "colorize"
-puts "Setting up!"
+
 class Tile
   getter :x_pos, :y_pos
 
@@ -20,11 +20,13 @@ end
 class Entity 
   property x_pos : Int32, y_pos : Int32
   setter game : Game | Nil
+  getter name : String
 
   def initialize(x_pos : Int32, y_pos : Int32)
     @x_pos = x_pos
     @y_pos = y_pos
     @char = 'O'
+    @name = "rock"
   end
 
   def to_s : String
@@ -51,14 +53,16 @@ class Entity
     # assign to a local variable so the compiler can be sure game won't change while this method's executing
     game = @game
 
-    return if game.nil?
+    raise "You must set a game" if game.nil?
     target_tile = game.get_tile(x, y)
     if !target_tile
+      game.message = "You can't go there."
       return
     end
 
     target_entity = game.get_entity(x, y, self)
     if target_entity
+      game.message = "You ran into a #{target_entity.name}!"
       return
     end
 
@@ -72,17 +76,22 @@ class Player < Entity
     @x_pos = x_pos
     @y_pos = y_pos
     @char = '@'
+    @name = "player"
   end
 end
 
 class Game
   getter :tiles, :width, :height
+  setter :message
 
   def initialize
     @tiles = [] of Tile
     @entities = [] of Entity
+
     @width = 50
     @height = 10
+
+    @message = "Welcome to the dungeon!"
     @player = Player.new(5, 5)
     @player.game = self
     @entities.push(@player)
@@ -97,7 +106,7 @@ class Game
   end
 
 
-  def setup
+  def run 
     @width.times do |w|
       @height.times do |h|
         @tiles.push(Tile.new(".", w, h, :white, :light_gray, :dim)) 
@@ -148,6 +157,7 @@ class Game
     clear_screen
     puts header
     puts output 
+    puts "\n\r" + @message + "\n\r"
   end
 
   private def clear_screen # placeholder
@@ -156,5 +166,5 @@ class Game
 end
 
 game = Game.new
-game.setup
+game.run
 puts "\r\nThanks for playing!"
