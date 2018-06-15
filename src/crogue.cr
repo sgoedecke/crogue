@@ -17,7 +17,7 @@ class Tile
   end
 
   def self.default(w : Int32, h : Int32)
-    new(".", w, h, :white, :light_gray, :dim)
+    new(" ", w, h, :white, :white, :dim)
   end
 end
 
@@ -29,12 +29,11 @@ class Entity
   def initialize(x_pos : Int32, y_pos : Int32)
     @x_pos = x_pos
     @y_pos = y_pos
-    @char = 'O'
-    @name = "rock"
+    @name = "entity"
   end
 
   def to_s : String
-    @char.colorize.mode(:bold).to_s
+    "X"
   end
 
   def move_up
@@ -76,11 +75,20 @@ class Entity
 end
 
 class Player < Entity
-  def initialize(x_pos : Int32, y_pos : Int32)
-    @x_pos = x_pos
-    @y_pos = y_pos
-    @char = '@'
-    @name = "player"
+  def to_s : String
+    '@'.colorize.mode(:bold).to_s
+  end
+end
+
+class Rock < Entity
+  def to_s : String
+    'O'.colorize.fore(:black).to_s
+  end
+end
+
+class Tree < Entity
+  def to_s : String
+    'T'.colorize.fore(:green).to_s
   end
 end
 
@@ -111,15 +119,14 @@ class Game
   end
 
   def setup
-
     @width.times do |w|
       @height.times do |h|
         @tiles.push(Tile.default(w, h)) 
       end
     end
 
-    other_entity = Entity.new(1, 1)
-    @entities.push(other_entity)
+    @entities.push(Rock.new(1,1))
+    @entities.push(Tree.new(8,8))
   end
 
   def run 
