@@ -15,6 +15,10 @@ class Tile
   def to_s : String
     @char.colorize.fore(@color).back(@bg_color).mode(@mode).to_s
   end
+
+  def self.default(w : Int32, h : Int32)
+    new(".", w, h, :white, :light_gray, :dim)
+  end
 end
 
 class Entity 
@@ -88,13 +92,14 @@ class Game
     @tiles = [] of Tile
     @entities = [] of Entity
 
+    @message = "Welcome to the dungeon!"
+
     @width = 50
     @height = 10
-
-    @message = "Welcome to the dungeon!"
     @player = Player.new(5, 5)
     @player.game = self
     @entities.push(@player)
+    setup
   end
 
   def get_tile(x : Int32, y : Int32) Tile | Nil
@@ -105,20 +110,22 @@ class Game
     @entities.find{ |t| t.x_pos == x && t.y_pos == y && t != asker }
   end
 
+  def setup
 
-  def run 
     @width.times do |w|
       @height.times do |h|
-        @tiles.push(Tile.new(".", w, h, :white, :light_gray, :dim)) 
+        @tiles.push(Tile.default(w, h)) 
       end
     end
 
     other_entity = Entity.new(1, 1)
     @entities.push(other_entity)
+  end
 
+  def run 
     STDIN.raw do |io|
       io.read_timeout = nil 
-      print_screen
+      draw 
 
       while true
         char = io.read_char
@@ -136,12 +143,12 @@ class Game
           @player.move_left
         end
 
-        print_screen
+        draw 
       end
     end
   end
 
-  private def print_screen
+  private def draw 
     screen = Array(Array(String)).new(@height) { Array(String).new(@width, "0") }
     @tiles.each do |t|
       screen[t.y_pos][t.x_pos] = t.to_s
