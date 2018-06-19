@@ -17,7 +17,7 @@ class Game
     @height = 10
     @player = Player.new(5, 5)
     add_entity(@player)
-    setup
+    load_map("maps/lv1.map")
   end
 
   def get_tile(x : Int32, y : Int32) Tile | Nil
@@ -28,35 +28,37 @@ class Game
     @entities.find{ |t| t.x_pos == x && t.y_pos == y && t != asker }
   end
 
-  def setup
-    @width.times do |w|
-      @height.times do |h|
-        @tiles.push(Tile.default(w, h)) 
-      end
-    end
+  def load_map(file_path : String)
+    max_x = 0
+    max_y = 0
 
-    load_entities
-  end
-
-  def load_entities
-    raw_map = File.read_lines("maps/lv1.map")
+    raw_map = File.read_lines(file_path)
     raw_map.each_with_index do |row, y|
+      max_y = y if max_y < y
       row.split("").each_with_index do |tile, x|
-         case tile
-          when "#"
-            add_entity(Door.new(x,y))
-          when "O"
-            add_entity(Rock.new(x,y))
-          when "X"
-            add_entity(Enemy.new(x,y))
-          when "k"
-            add_entity(Key.new(x,y))
-          when "@"
-            @player.x_pos = x
-            @player.y_pos = y
+        max_x = x if max_x < x
+        case tile
+        when "#"
+          add_entity(Door.new(x,y))
+        when "O"
+          add_entity(Rock.new(x,y))
+        when "X"
+          add_entity(Enemy.new(x,y))
+        when "k"
+          add_entity(Key.new(x,y))
+        when "@"
+          @player.x_pos = x
+          @player.y_pos = y
+        end
+
+        if tile != " "
+          @tiles.push(Tile.default(x, y)) 
         end
       end
     end
+
+    @height = max_y
+    @width = max_x
   end
 
   def end
@@ -100,7 +102,7 @@ class Game
   end
 
   private def draw 
-    screen = Array(Array(String)).new(@height) { Array(String).new(@width, "0") }
+    screen = Array(Array(String)).new(@height + 1) { Array(String).new(@width + 1, " ") }
     @tiles.each do |t|
       screen[t.y_pos][t.x_pos] = t.to_s
     end
