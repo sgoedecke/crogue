@@ -2,6 +2,8 @@
 
 Crogue is a tiny roguelike written in Crystal, mostly as a learning experience. The player `@` advances through a series of levels, avoiding goblins `X`, finding the key `k` to open the gate `#` to the next level. 
 
+![Screenshot](./screenshot.png)
+
 ## Installation
 
 Using Crystal, run `crystal run src/crogue.cr` in the root of this repo. Alternatively, run the `crogue-game` binary I've checked into the `bin` folder (e.g. `./bin/crogue-game`). You must run it from the root of this repo, or some other place where the `maps` folder is available.
