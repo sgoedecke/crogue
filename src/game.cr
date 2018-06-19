@@ -14,6 +14,8 @@ class Game
     @message = "Welcome to the dungeon!"
     @level_message = level_message
 
+    @victory = false
+
     @width = 50
     @height = 10
     @player = Player.new(5, 5)
@@ -62,11 +64,12 @@ class Game
     @width = max_x
   end
 
-  def end
+  def end(victory : Bool)
     @playing = false
+    @victory = victory
   end
 
-  def run 
+  def run() Bool
     STDIN.raw do |io|
       io.read_timeout = nil 
       draw
@@ -95,6 +98,7 @@ class Game
         draw 
       end
     end
+    return @victory
   end
 
   private def add_entity(e : Entity)

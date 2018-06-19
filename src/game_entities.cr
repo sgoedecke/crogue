@@ -30,7 +30,7 @@ class Player < Entity
     if entity.is_a?(Door)
       if @has_key
         game.message = "You unlock the door and leave the dungeon!"
-        game.end
+        game.end(true)
       else
         game.message = "The exit is locked."
       end
@@ -38,7 +38,7 @@ class Player < Entity
 
     if entity.is_a?(Enemy)
       game.message = "Ouch! You were killed by a goblin."
-      game.end
+      game.end(false)
     end
   end
 end
@@ -82,7 +82,7 @@ class Enemy < Entity
   def collide_with(entity : Entity) # when the current entity runs into another entity
     if entity.is_a? Player
       game.message = "Ouch! You were killed by a goblin."
-      game.end
+      game.end(false)
     end
   end
 end
