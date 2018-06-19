@@ -15,6 +15,9 @@ class Entity
     "X"
   end
 
+  def act # run every tick. override this for entities that have to do something
+  end
+
   def collide_with(entity : Entity) # when the current entity runs into another entity
     game.message = "#{self.name} ran into a #{entity.name}!"
   end

@@ -35,6 +35,11 @@ class Player < Entity
         game.message = "The exit is locked."
       end
     end
+
+    if entity.is_a?(Enemy)
+      game.message = "Ouch! You were killed by a goblin."
+      game.end
+    end
   end
 end
 
@@ -46,18 +51,38 @@ end
 
 class Rock < Entity
   def to_s : String
-    'O'.colorize.fore(:black).to_s
-  end
-end
-
-class Tree < Entity
-  def to_s : String
-    'T'.colorize.fore(:green).to_s
+    'O'.colorize.fore(:black).mode(:dim).to_s
   end
 end
 
 class Door < Entity
   def to_s : String
     '#'.colorize.fore(:yellow).mode(:bold).to_s
+  end
+end
+
+class Enemy < Entity
+  def to_s : String
+    'X'.colorize.fore(:red).mode(:bold).to_s
+  end
+
+  def act
+    if game.player.y_pos < y_pos
+      move_up
+    else
+      move_down
+    end
+    if game.player.x_pos < x_pos
+      move_left
+    else
+      move_right
+    end
+  end
+
+  def collide_with(entity : Entity) # when the current entity runs into another entity
+    if entity.is_a? Player
+      game.message = "Ouch! You were killed by a goblin."
+      game.end
+    end
   end
 end

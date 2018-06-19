@@ -3,7 +3,7 @@ require "./game_entities"
 require "./tile"
 
 class Game
-  getter :tiles, :width, :height
+  getter :tiles, :width, :height, :player
   setter :message
   property :entities
 
@@ -35,10 +35,28 @@ class Game
       end
     end
 
-    add_entity(Door.new(1,1))
-    add_entity(Tree.new(8,8))
+    load_entities
+  end
 
-    add_entity(Key.new(8,9))
+  def load_entities
+    raw_map = File.read_lines("maps/lv1.map")
+    raw_map.each_with_index do |row, y|
+      row.split("").each_with_index do |tile, x|
+         case tile
+          when "#"
+            add_entity(Door.new(x,y))
+          when "O"
+            add_entity(Rock.new(x,y))
+          when "X"
+            add_entity(Enemy.new(x,y))
+          when "k"
+            add_entity(Key.new(x,y))
+          when "@"
+            @player.x_pos = x
+            @player.y_pos = y
+        end
+      end
+    end
   end
 
   def end
@@ -65,6 +83,10 @@ class Game
           @player.move_right
         when 'a'
           @player.move_left
+        end
+
+        @entities.each do |e|
+          e.act
         end
 
         draw 
