@@ -19,6 +19,10 @@ class Entity
     game.message = "#{self.name} ran into a #{entity.name}!"
   end
 
+  def destroy
+    game.entities.delete(self)
+  end
+
   def move_up
     attempt_move(@x_pos, @y_pos - 1)
   end

@@ -5,6 +5,7 @@ require "./tile"
 class Game
   getter :tiles, :width, :height
   setter :message
+  property :entities
 
   def initialize
     @tiles = [] of Tile
@@ -15,8 +16,7 @@ class Game
     @width = 50
     @height = 10
     @player = Player.new(5, 5)
-    @player.game = self
-    @entities.push(@player)
+    add_entity(@player)
     setup
   end
 
@@ -35,16 +35,23 @@ class Game
       end
     end
 
-    @entities.push(Rock.new(1,1))
-    @entities.push(Tree.new(8,8))
+    add_entity(Door.new(1,1))
+    add_entity(Tree.new(8,8))
+
+    add_entity(Key.new(8,9))
+  end
+
+  def end
+    @playing = false
   end
 
   def run 
     STDIN.raw do |io|
       io.read_timeout = nil 
-      draw 
+      draw
+      @playing = true
 
-      while true
+      while @playing 
         char = io.read_char
 
         case char
@@ -63,6 +70,11 @@ class Game
         draw 
       end
     end
+  end
+
+  private def add_entity(e : Entity)
+    @entities.push(e)
+    e.game = self
   end
 
   private def draw 
