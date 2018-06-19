@@ -9,9 +9,9 @@ class Player < Entity
 
   def to_s : String
     if @has_key
-      '@'.colorize.fore(:yellow).mode(:bold).to_s
+      '@'.colorize.back(:white).fore(:yellow).mode(:bold).to_s
     else
-      '@'.colorize.mode(:bold).to_s
+      '@'.colorize.back(:white).mode(:bold).to_s
     end
   end
 
@@ -45,25 +45,25 @@ end
 
 class Key < Entity
   def to_s : String
-    'k'.colorize.fore(:yellow).to_s
+    'k'.colorize.fore(:yellow).back(:white).to_s
   end
 end
 
 class Rock < Entity
   def to_s : String
-    'O'.colorize.fore(:black).mode(:dim).to_s
+    'O'.colorize.fore(:black).back(:white).mode(:dim).to_s
   end
 end
 
 class Door < Entity
   def to_s : String
-    '#'.colorize.fore(:yellow).mode(:bold).to_s
+    '#'.colorize.fore(:yellow).back(:white).mode(:bold).to_s
   end
 end
 
 class Enemy < Entity
   def to_s : String
-    'X'.colorize.fore(:red).mode(:bold).to_s
+    'X'.colorize.fore(:red).back(:white).mode(:bold).to_s
   end
 
   def act
